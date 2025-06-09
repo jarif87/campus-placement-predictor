@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Campus Placement Predictor</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="text-center my-5">
+            <h1 class="title">Campus Placement Predictor</h1>
+            <p class="subtitle">Discover your placement potential with our AI-driven predictor!</p>
+        </header>
+
+        <!-- Intro Section -->
+        <div class="card intro-card shadow-lg">
+            <div class="card-body">
+                <h4 class="card-title text-center">Campus Recruitment Prediction</h4>
+                <p class="card-text">
+                    Campus recruitment is a strategy for sourcing, engaging, and hiring young talent for internship and entry-level positions. College recruiting is typically a tactic for medium- to large-sized companies with high-volume recruiting needs, but can range from small efforts (like working with university career centers to source potential candidates) to large-scale operations (like visiting a wide array of colleges and attending recruiting events throughout the spring and fall semester). Campus recruitment often involves working with university career services centers and attending career fairs to meet in-person with college students and recent graduates. Some industries participate in campus recruiting more than others; finance, technology, business consulting, manufacturing, and engineering are a few of the most popular.
+                </p>
+                <div class="text-center">
+                    <img src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202002/main_image.jpeg?AEmB0MOrFThcKQ.8H2pvP3lMkJ5AxyxP&size=770:433" alt="Campus Recruitment" class="img-fluid rounded">
+                </div>
+                <hr>
+                <p class="mb-0">
+                    The dataset is collected from the Kaggle website. Here is the link for the <a href="https://www.kaggle.com/benroshan/factors-affecting-campus-placement?select=Placement_Data_Full_Class.csv" target="_blank">dataset</a>. The goal of this project is to analyze the factors that can affect Campus Recruitment and create a model to predict the chances of getting placed based on various factors.
+                </p>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="card form-card shadow-lg my-5">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Campus Placement Predictor</h3>
+                <form id="placementForm" method="POST" action="/" style="display: {% if placed %}none{% endif %};">
+                    <!-- Gender -->
+                    <div class="form-group">
+                        <label for="gender">Select Gender</label>
+                        <select class="form-control" id="gender" name="gender">
+                            <option value="1" selected>Male</option>
+                            <option value="0">Female</option>
+                        </select>
+                    </div>
+
+                    <!-- Specialisation -->
+                    <div class="form-group">
+                        <label for="spec">Select Specialisation</label>
+                        <select class="form-control" id="spec" name="spec">
+                            <option value="1" selected>Marketing and Human Resources</option>
+                            <option value="0">Marketing and Finance</option>
+                        </select>
+                    </div>
+
+                    <!-- Technical Degree -->
+                    <div class="form-group">
+                        <label for="tech">Select the Technical Degree</label>
+                        <select class="form-control" id="tech" name="tech">
+                            <option value="0">Commerce and Management</option>
+                            <option value="1">Others</option>
+                            <option value="2" selected>Science and Technology</option>
+                        </select>
+                    </div>
+
+                    <!-- Work Experience -->
+                    <div class="form-group">
+                        <label for="work">Have Work Experience?</label>
+                        <select class="form-control" id="work" name="work">
+                            <option value="0" selected>No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- SSC Percentage -->
+                    <div class="form-group">
+                        <label for="ssc">Enter the SSC Percentage</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="ssc" name="ssc" placeholder="67.00" required>
+                    </div>
+
+                    <!-- High School Percentage -->
+                    <div class="form-group">
+                        <label for="hsc">Enter the High School Percentage</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="hsc" name="hsc" placeholder="78.33" required>
+                    </div>
+
+                    <!-- Degree Percentage -->
+                    <div class="form-group">
+                        <label for="dsc">Enter the Degree Percentage</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="dsc" name="dsc" placeholder="64.00" required>
+                    </div>
+
+                    <!-- MBA Percentage -->
+                    <div class="form-group">
+                        <label for="mba">Enter the MBA Percentage</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="mba" name="mba" placeholder="58.80" required>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-gradient">Predict Now</button>
+                    </div>
+                </form>
+                {% if error_message %}
+                    <div class="alert alert-danger mt-3">{{ error_message }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        {% if placed %}
+            <div class="card result-card success shadow-lg my-5">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Predicted Result</h4>
+                    <p class="text-center">Based on the details filled in the form, the student: <strong>{{ predictedclasssend }}</strong></p>
+                    <p class="text-center">Percentage of getting the placement: <span class="highlight">{{ predictedprob }}%</span></p>
+                    <hr>
+                    <p class="text-center">Congratulations, you may get a placement with these records. Try hard for big tech giants, till then <span class="highlight">All The Best :)</span></p>
+                    <div class="text-center">
+                        <a href="/" class="btn btn-outline-light">Go Back</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {% if predictedclasssend %}
+                <div class="card result-card failure shadow-lg my-5">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Predicted Result</h4>
+                        <p class="text-center">Based on the details filled in the form, the student: <strong>{{ predictedclasssend }}</strong></p>
+                        <p class="text-center">You must work hard to improve your chances. Check out the tips below!</p>
+                        <div class="text-center">
+                            <a href="/" class="btn btn-outline-light">Go Back</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card tips-card shadow-lg my-5">
+                    <div class="card-body">
+                        <h3 class="text-center mb-4">20 Tips to Crack the Campus Placement Interview</h3>
+                        <p>You've done the hard work and excelled in your degree course. Now it’s time to cross the last hurdle between you and your career – the campus placement interview.</p>
+                        <ol>
+                            <li><strong>Pay Attention to Pre-Placement Presentations:</strong> Listen carefully to company presentations; you may be questioned on them during the interview.</li>
+                            <li><strong>Do Mock Interviews:</strong> Practice with friends or online resources to build confidence.</li>
+                            <li><strong>Be on Time:</strong> Arrive 30 minutes early to demonstrate punctuality.</li>
+                            <li><strong>Be Presentable:</strong> Dress professionally to reflect care for your appearance and your institute.</li>
+                            <li><strong>Be Confident, But Not Overconfident:</strong> Show confidence without being brash; authenticity matters.</li>
+                            <li><strong>Research Companies:</strong> Know the company’s mission, values, and recent achievements.</li>
+                            <li><strong>Take Deep Breaths:</strong> Use deep breathing to calm nerves and think clearly.</li>
+                            <li><strong>Don’t Get Flustered:</strong> Stay composed if you answer incorrectly; recover confidently.</li>
+                            <li><strong>Talk About What You Love:</strong> Share your passions to show a well-rounded personality.</li>
+                            <li><strong>Bring Enough Copies of Your Resume:</strong> Have multiple copies for different companies.</li>
+                            <li><strong>Make Resume According to Profile:</strong> Tailor resumes to highlight relevant skills for each role.</li>
+                            <li><strong>Talk About Achievements:</strong> Share academic and extracurricular successes confidently.</li>
+                            <li><strong>Prepare for Aptitude Tests:</strong> Practice aptitude questions regularly.</li>
+                            <li><strong>Prepare for Group Discussions:</strong> Hone debating skills through practice.</li>
+                            <li><strong>Don’t Talk Too Much:</strong> Balance communication to keep the interviewer engaged.</li>
+                            <li><strong>Know Your Subject Well:</strong> Master your degree and specialization topics.</li>
+                            <li><strong>Show Tech Competence:</strong> Demonstrate proficiency in relevant technologies.</li>
+                            <li><strong>Have Decent General Knowledge:</strong> Stay updated with current events and business news.</li>
+                            <li><strong>Ask for Honest Feedback:</strong> Request feedback to improve for future interviews.</li>
+                            <li><strong>Prepare for Online Interviews:</strong> Ensure a stable setup for virtual interviews.</li>
+                        </ol>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4">
+        <p class="footer-text">© 2025 Campus Placement Predictor. Created by Sadik Al Jarif.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('placementForm').addEventListener('submit', function(event) {
+            const inputs = ['ssc', 'hsc', 'dsc', 'mba'];
+            for (let id of inputs) {
+                let value = parseFloat(document.getElementById(id).value);
+                if (value < 0 || value > 100) {
+                    alert(`${id.toUpperCase()} percentage must be between 0 and 100.`);
+                    event.preventDefault();
+                    return;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
